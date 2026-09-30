@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{ site_name }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<style>
+:root{--bg:#35208f;--bg2:#6546e8;--card:rgba(255,255,255,.16);--stroke:rgba(255,255,255,.22);--text:#fff;--muted:#d9d2ff;--dark:#17102f;--green:#55e7b0;--red:#ff7d92}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui;background:radial-gradient(circle at 20% 10%,#805eff 0,#5639cf 32%,#2c196f 100%);min-height:100vh;color:var(--text)}a{text-decoration:none;color:inherit}
+.top{height:166px;padding:26px 18px 0;background:linear-gradient(180deg,#693fc0,#4b2bb1);position:relative}.brand{display:flex;align-items:center;gap:12px}.logo{width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,#fff,#cfc8ff);display:grid;place-items:center;color:#4e31bd;font-weight:900;box-shadow:0 8px 20px #20105b66}.brand b{font-size:17px}.logout{position:absolute;right:20px;top:30px;font-size:26px}
+.wrap{max-width:1050px;margin:-1px auto 90px;padding:28px 18px}.hero{padding:24px 24px 14px;border-top:1px solid #ffffff44}.hello{font-size:28px;font-weight:400}.name{font-size:32px;font-weight:800;margin-top:2px}.email{color:var(--muted);font-size:15px;margin-top:6px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:var(--card);border:1px solid var(--stroke);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:25px;padding:22px;box-shadow:0 16px 35px #1c0e604d}.card h2{margin:0 0 16px;font-size:20px}.field{width:100%;padding:14px 15px;border:1px solid #ffffff2b;background:#ffffff1c;color:white;border-radius:14px;outline:0;margin:7px 0 11px}.field::file-selector-button{background:#fff;color:#3d258f;border:0;padding:8px 12px;border-radius:9px;margin-right:8px}.btn{border:0;border-radius:13px;padding:12px 15px;font-weight:800;cursor:pointer}.primary{background:#fff;color:#4224a4}.ghost{background:#ffffff1a;color:#fff;border:1px solid #ffffff2d}.danger{background:#ff5f78;color:#fff}.success{background:#42e0a3;color:#132b27}.row{display:flex;gap:9px;flex-wrap:wrap}.bot{margin-top:18px;background:rgba(22,11,57,.7);border:1px solid #ffffff1c;border-radius:22px;padding:18px}.bothead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.botname{font-size:19px;font-weight:800}.badge{font-size:11px;padding:6px 9px;border-radius:99px;background:#ffffff18;color:var(--muted)}.running{color:#5ff0b8}.stopped{color:#c5bddf}.crashed,.error{color:#ff8ca0}.console{margin-top:13px;background:#0e0920;border-radius:16px;padding:13px;color:#6ff2bd;font-family:ui-monospace,monospace;font-size:12px;min-height:80px;max-height:160px;overflow:auto;white-space:pre-wrap}.timer{font-variant-numeric:tabular-nums;color:#fff;font-size:12px}.nav{position:fixed;bottom:0;left:0;right:0;height:78px;background:#fff;color:#8f8b98;display:flex;justify-content:center;z-index:30;box-shadow:0 -10px 30px #1b0d5a44}.nav a{width:150px;text-align:center;padding-top:11px}.nav .active{color:#4b2bb1;font-weight:800}.nav .ico{font-size:23px}.flash{padding:12px 15px;border-radius:13px;margin:0 0 15px;background:#ffffff18}.editor-wrap{max-width:1200px;margin:20px auto 90px;padding:0 12px}.tabs{display:flex;gap:8px;margin:12px 0}.tab{padding:10px 13px;border-radius:11px;background:#ffffff16;cursor:pointer}.tab.active{background:#fff;color:#4224a4}.CodeMirror{height:65vh;border-radius:18px;font-size:13px}.auth{max-width:440px;margin:10vh auto;padding:22px}.small{color:var(--muted);font-size:12px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #ffffff18;text-align:left;font-size:13px}.scroll{overflow:auto}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:22px 14px}.name{font-size:27px}.hello{font-size:24px}.card{padding:18px}.nav a{width:33.3%}}
+</style>
+</head>
+<body>
+<div class="top"><div class="brand"><div class="logo">PH</div><b>{{ site_name }}</b></div>{% if user %}<a class="logout" href="{{ url_for('logout') }}">↪</a>{% endif %}</div>
+{% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}<div class="wrap" style="margin-bottom:-20px;padding-bottom:0">{% for cat,msg in messages %}<div class="flash">{{msg}}</div>{% endfor %}</div>{% endif %}{% endwith %}
+{% block body %}{% endblock %}
+{% if user and request.endpoint not in ['editor'] %}
+<div class="nav"><a class="active" href="{{url_for('dashboard')}}"><div class="ico">⌂</div><div>Home</div></a><a href="{{url_for('dashboard')}}#bots"><div class="ico">▥</div><div>Resources</div></a>{% if user.is_admin %}<a href="{{url_for('admin')}}"><div class="ico">⚙</div><div>Admin</div></a>{% else %}<a href="{{url_for('dashboard')}}#console"><div class="ico">◉</div><div>Console</div></a>{% endif %}</div>
+{% endif %}
+<script>
+function uptime(iso, el){ if(!iso)return; const start=new Date(iso); function tick(){let s=Math.max(0,Math.floor((Date.now()-start)/1000));let d=Math.floor(s/86400);s%=86400;let h=Math.floor(s/3600);s%=3600;let m=Math.floor(s/60);s%=60;el.textContent=`${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`; } tick(); setInterval(tick,1000);}
+</script>
+</body></html>

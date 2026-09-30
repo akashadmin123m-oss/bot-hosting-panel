@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% block body %}
+<div class="wrap">
+<section class="hero"><div class="hello">Hello,</div><div class="name">{{user.name}}</div><div class="email">{{user.email}}</div></section>
+<div class="grid" style="margin-top:20px">
+<div class="card"><h2>Upload Files</h2><p class="small">Each bot uses exactly two files.</p><form method="post" action="{{url_for('create_bot')}}" enctype="multipart/form-data"><input class="field" name="name" placeholder="Bot name"><input class="field" name="bot_file" type="file" accept=".py" required><input class="field" name="req_file" type="file" accept=".txt" required><button class="btn primary">＋ Save Bot</button></form></div>
+<div class="card"><h2>Hosting</h2><div style="font-size:32px;font-weight:800">{{bots|length}} / {{max_bots}}</div><p class="small">Bots stored in your account. Use Editor for live code changes.</p></div>
+</div>
+<div id="bots" style="margin-top:24px"><h2>My Bots</h2>
+{% for bot in bots %}
+<div class="bot">
+<div class="bothead"><div><div class="botname">{{bot.name}}</div><div class="small">ID {{bot.id[:8]}} · {{bot.status}}</div></div><div class="badge {{bot.status}}">{{bot.status|upper}}</div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0"><div class="timer" data-start="{{bot.started_at.isoformat() if bot.started_at else ''}}">0d 00h 00m 00s</div><div class="small">Hosting time</div></div>
+<div class="row">
+{% if bot.status in ['running','starting'] %}<form method="post" action="{{url_for('bot_stop',bot_id=bot.id)}}"><button class="btn danger">Stop</button></form>{% else %}<form method="post" action="{{url_for('bot_run',bot_id=bot.id)}}"><button class="btn success">Run</button></form>{% endif %}
+<form method="post" action="{{url_for('bot_restart',bot_id=bot.id)}}"><button class="btn ghost">↻ Refresh</button></form>
+<a class="btn ghost" href="{{url_for('editor',bot_id=bot.id)}}">⌘ Live Edit</a>
+<form method="post" action="{{url_for('bot_delete',bot_id=bot.id)}}" onsubmit="return confirm('Delete this bot?')"><button class="btn danger">Delete</button></form>
+</div>
+<div class="console" id="console-{{bot.id}}">Loading console...</div>
+</div>
+{% else %}<div class="card"><p>No bots yet. Upload bot.py and requirements.txt above.</p></div>{% endfor %}
+</div>
+</div>
+<script>
+document.querySelectorAll('.timer').forEach(e=>uptime(e.dataset.start,e));
+async function refreshLogs(){for(const el of document.querySelectorAll('.console')){const id=el.id.replace('console-','');try{const r=await fetch('/bot/'+id+'/logs');const d=await r.json();el.textContent=d.log||'No logs yet.';}catch(e){}}}
+refreshLogs();setInterval(refreshLogs,4000);
+</script>
+{% endblock %}

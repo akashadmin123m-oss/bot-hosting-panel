@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block body %}
+<div class="editor-wrap">
+<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h2 style="margin:0">{{bot.name}} · Live Editor</h2><div class="small">Edit, save, then refresh/restart the bot.</div></div><a class="btn ghost" href="{{url_for('dashboard')}}">← Back</a></div>
+<form method="post" action="{{url_for('save_code',bot_id=bot.id)}}" id="editForm">
+<div class="tabs"><div class="tab active" onclick="showTab('py',this)">bot.py</div><div class="tab" onclick="showTab('req',this)">requirements.txt</div></div>
+<textarea id="py" name="bot_code">{{bot_code}}</textarea><textarea id="req" name="req_code" style="display:none">{{req_code}}</textarea>
+<div class="row" style="margin-top:12px"><button class="btn primary" name="restart" value="0">Save</button><button class="btn success" name="restart" value="1">Save & Restart</button><button type="button" class="btn ghost" onclick="location.reload()">↻ Refresh</button></div>
+</form>
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/shell/shell.min.js"></script>
+<script>
+let py=CodeMirror.fromTextArea(document.getElementById('py'),{mode:'python',theme:'dracula',lineNumbers:true,indentUnit:4,tabSize:4});
+let req=CodeMirror.fromTextArea(document.getElementById('req'),{mode:'shell',theme:'dracula',lineNumbers:true});
+function showTab(which,el){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');if(which==='py'){document.getElementById('py').parentElement.style.display='block';document.getElementById('req').parentElement.style.display='none';py.refresh()}else{document.getElementById('py').parentElement.style.display='none';document.getElementById('req').parentElement.style.display='block';req.refresh()}}
+</script>
+{% endblock %}

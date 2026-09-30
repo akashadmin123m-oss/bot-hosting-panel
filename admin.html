@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block body %}
+<div class="wrap"><div class="hero"><div class="hello">Admin</div><div class="name">Control Center</div><div class="email">Users, bots and runtime records</div></div>
+<div class="grid" style="margin-top:20px"><div class="card"><h2>Users</h2><div class="scroll"><table class="table"><tr><th>Name</th><th>Email</th><th>Bots</th><th>Action</th></tr>{% for u in users %}<tr><td>{{u.name}}</td><td>{{u.email}}</td><td>{{u.id}}</td><td>{% if not u.is_admin %}<form method="post" action="{{url_for('admin_delete_user',user_id=u.id)}}"><button class="btn danger">Delete</button></form>{% endif %}</td></tr>{% endfor %}</table></div></div>
+<div class="card"><h2>Bot Database</h2><div class="scroll"><table class="table"><tr><th>Name</th><th>Status</th><th>PID</th><th>Created</th></tr>{% for b in bots %}<tr><td>{{b.name}}</td><td>{{b.status}}</td><td>{{b.pid or '-'}}</td><td>{{b.created_at}}</td></tr>{% endfor %}</table></div></div></div></div>
+{% endblock %}
